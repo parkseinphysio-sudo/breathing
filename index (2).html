@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>말 훈련 프로그램</title>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+
+  :root{
+    --sage-900:#213B33;
+    --sage-700:#2F5548;
+    --sage-600:#3D6B5C;
+    --sage-400:#7FA895;
+    --sage-200:#C9DDD1;
+    --sage-100:#E7F0EA;
+    --amber:#D9922F;
+    --amber-dark:#B9741C;
+    --amber-soft:#FBEBD3;
+    --paper:#FBF8F1;
+    --card:#FFFFFF;
+    --ink:#26302B;
+    --ink-soft:#5C685F;
+    --line:#E4DED0;
+    --danger-bg:#FBEAE3;
+    --danger-line:#C1543C;
+    --danger-ink:#7A3120;
+    --caution-bg:#FCF3DC;
+    --caution-line:#D9922F;
+    --caution-ink:#7A5314;
+    --radius-lg:28px;
+    --radius-md:20px;
+    --radius-sm:14px;
+    --scale:1;
+  }
+
+  *{box-sizing:border-box;}
+
+  html{-webkit-text-size-adjust:100%;}
+
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Noto Sans KR', sans-serif;
+    font-size:calc(16px * var(--scale));
+    line-height:1.6;
+  }
+
+  h1,h2,h3,.font-display{
+    font-family:'Gowun Dodum','Noto Sans KR', sans-serif;
+  }
+
+  .topbar{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:var(--sage-900);
+    color:#fff;
+    padding:12px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+
+  .topbar-brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:'Gowun Dodum','Noto Sans KR',sans-serif;
+    font-size:1.15rem;
+    font-weight:700;
+    cursor:pointer;
+  }
+
+  .topbar-brand .dot{
+    width:12px;height:12px;border-radius:50%;
+    background:var(--amber);
+  }
+
+  .topbar-actions{
+    display:flex;
+    gap:8px;
+  }
+
+  .pill-btn{
+    border:1.5px solid rgba(255,255,255,0.35);
+    background:rgba(255,255,255,0.08);
+    color:#fff;
+    border-radius:999px;
+    padding:9px 16px;
+    font-size:0.92rem;
+    font-weight:700;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+
+  .pill-btn:hover{ background:rgba(255,255,255,0.18); }
+
+  .app{
+    max-width:960px;
+    margin:0 auto;
+    padding:22px 18px 60px;
+  }
+
+  /* HERO */
+  .hero{
+    background:var(--sage-700);
+    color:#fff;
+    border-radius:var(--radius-lg);
+    padding:32px 28px;
+    margin-bottom:20px;
+  }
+  .hero-eyebrow{
+    display:inline-block;
+    background:rgba(255,255,255,0.14);
+    padding:6px 14px;
+    border-radius:999px;
+    font-size:0.85rem;
+    font-weight:700;
+    margin-bottom:14px;
+  }
+  .hero h1{
+    margin:0;
+    font-size:2rem;
+    line-height:1.35;
+  }
+  .hero p{
+    margin:12px 0 0;
+    font-size:1.05rem;
+    color:var(--sage-100);
+    line-height:1.7;
+    max-width:560px;
+  }
+
+  /* MENU */
+  .menu{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:14px;
+    margin-bottom:20px;
+  }
+  .menu-card{
+    background:var(--card);
+    border:2px solid var(--line);
+    border-radius:var(--radius-md);
+    padding:20px;
+    cursor:pointer;
+    display:flex;
+    gap:16px;
+    align-items:center;
+    text-align:left;
+    transition:0.15s;
+    min-height:104px;
+  }
+  .menu-card:hover{ border-color:var(--sage-400); }
+  .menu-card.active{
+    border-color:var(--sage-600);
+    background:var(--sage-100);
+  }
+  .menu-icon{
+    flex:0 0 auto;
+    width:60px;height:60px;
+    border-radius:16px;
+    background:var(--sage-100);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .menu-card.active .menu-icon{ background:#fff; }
+  .menu-icon svg{ width:34px; height:34px; }
+  .menu-title{
+    font-size:1.12rem;
+    font-weight:900;
+    color:var(--sage-700);
+    margin-bottom:4px;
+  }
+  .menu-desc{
+    font-size:0.92rem;
+    color:var(--ink-soft);
+    line-height:1.5;
+  }
+
+  /* PANEL */
+  .panel{
+    background:var(--card);
+    border-radius:var(--radius-lg);
+    padding:26px 24px;
+    box-shadow:0 6px 24px rgba(33,59,51,0.07);
+    min-height:520px;
+  }
+
+  .program-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:14px;
+    margin-bottom:6px;
+    flex-wrap:wrap;
+  }
+  .program-title{
+    font-size:1.55rem;
+    font-weight:900;
+    color:var(--sage-900);
+  }
+  .step-badge{
+    background:var(--amber-soft);
+    color:var(--amber-dark);
+    padding:7px 14px;
+    border-radius:999px;
+    font-weight:900;
+    font-size:0.95rem;
+    white-space:nowrap;
+  }
+
+  .dot-progress{
+    display:flex;
+    gap:7px;
+    margin:14px 0 22px;
+  }
+  .dot-progress .dot{
+    flex:1;
+    height:9px;
+    border-radius:999px;
+    background:var(--sage-200);
+  }
+  .dot-progress .dot.done{ background:var(--sage-600); }
+  .dot-progress .dot.now{ background:var(--amber); }
+
+  /* CONTENT BLOCKS */
+  .stack{ display:flex; flex-direction:column; gap:18px; }
+
+  .visual-card{
+    background:var(--sage-100);
+    border-radius:var(--radius-md);
+    padding:16px;
+  }
+  .visual-title{
+    text-align:center;
+    font-size:0.95rem;
+    font-weight:700;
+    color:var(--sage-700);
+    margin-bottom:10px;
+  }
+  .visual-frame{
+    background:#fff;
+    border-radius:16px;
+    min-height:220px;
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;
+    border:1px solid var(--line);
+  }
+  .visual-frame img{ width:100%; height:100%; object-fit:cover; }
+
+  .info-card, .content-card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    padding:20px;
+  }
+  .info-card h2, .content-card h2{
+    margin:0 0 10px;
+    color:var(--sage-700);
+    font-size:1.2rem;
+  }
+  .info-card p, .content-card p, .info-card li{
+    font-size:1rem;
+    line-height:1.7;
+    color:var(--ink);
+  }
+
+  .material-list{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin-top:12px;
+  }
+  .material{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:12px;
+    font-size:0.98rem;
+    font-weight:700;
+    text-align:center;
+  }
+
+  .danger{
+    background:var(--danger-bg);
+    border-left:6px solid var(--danger-line);
+    border-radius:14px;
+    padding:14px 16px;
+    font-size:0.98rem;
+    line-height:1.65;
+    color:var(--danger-ink);
+    margin:14px 0;
+  }
+  .caution{
+    background:var(--caution-bg);
+    border-left:6px solid var(--caution-line);
+    border-radius:14px;
+    padding:14px 16px;
+    font-size:0.98rem;
+    line-height:1.65;
+    color:var(--caution-ink);
+    margin:14px 0;
+  }
+
+  .check-list{ display:grid; gap:10px; margin-top:12px; }
+  .check-list label{
+    background:#fff;
+    padding:13px 14px;
+    border-radius:12px;
+    font-size:1rem;
+    display:flex;
+    gap:10px;
+    align-items:center;
+    border:1px solid var(--line);
+  }
+  input[type="checkbox"]{ width:22px;height:22px; accent-color:var(--sage-600); flex:0 0 auto; }
+
+  /* STEP SCREEN */
+  .step-title{
+    font-size:1.5rem;
+    font-weight:900;
+    color:var(--sage-700);
+    margin-bottom:10px;
+  }
+  .guide{
+    font-size:1.12rem;
+    line-height:1.8;
+    white-space:pre-line;
+    color:var(--ink);
+    margin-bottom:14px;
+  }
+  .target-label{
+    font-size:0.88rem;
+    font-weight:900;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .target{
+    background:var(--sage-100);
+    border:2.5px dashed var(--sage-400);
+    color:var(--sage-700);
+    font-size:1.7rem;
+    font-weight:900;
+    text-align:center;
+    border-radius:18px;
+    padding:20px;
+    margin-bottom:14px;
+    min-height:80px;
+    display:flex;align-items:center;justify-content:center;
+    word-break:keep-all;
+  }
+  .caregiver-tip{
+    background:var(--amber-soft);
+    border-left:6px solid var(--amber);
+    border-radius:14px;
+    padding:14px 16px;
+    font-size:0.98rem;
+    line-height:1.65;
+    color:var(--amber-dark);
+  }
+
+  /* TIMER */
+  .timer-block{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    margin-top:20px;
+    flex-wrap:wrap;
+  }
+  .ring-wrap{
+    position:relative;
+    width:130px;height:130px;
+    flex:0 0 auto;
+  }
+  .ring-bg{
+    width:100%;height:100%;
+    border-radius:50%;
+    background:conic-gradient(var(--sage-600) calc(var(--pct,100) * 1%), var(--sage-200) 0);
+    display:flex;align-items:center;justify-content:center;
+    transition:background 0.25s linear;
+  }
+  .ring-inner{
+    width:96px;height:96px;
+    border-radius:50%;
+    background:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:2.1rem;
+    font-weight:900;
+    color:var(--sage-800, var(--sage-700));
+  }
+  .status{
+    flex:1;
+    min-width:200px;
+    background:var(--paper);
+    border-radius:16px;
+    padding:16px;
+    font-size:1rem;
+    color:var(--ink-soft);
+    border:1px solid var(--line);
+    line-height:1.6;
+  }
+
+  /* BUTTONS */
+  .primary-row{
+    margin-top:22px;
+  }
+  .btn-primary{
+    width:100%;
+    border:none;
+    border-radius:18px;
+    padding:20px;
+    font-size:1.2rem;
+    font-weight:900;
+    cursor:pointer;
+    background:var(--amber);
+    color:#fff;
+    box-shadow:0 8px 18px rgba(217,146,47,0.35);
+  }
+  .btn-primary:hover{ background:var(--amber-dark); }
+  .btn-primary.sage{
+    background:var(--sage-600);
+    box-shadow:0 8px 18px rgba(61,107,92,0.28);
+  }
+  .btn-primary.sage:hover{ background:var(--sage-700); }
+
+  .secondary-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:9px;
+    margin-top:12px;
+  }
+  .btn-sec{
+    border:1.5px solid var(--line);
+    background:#fff;
+    color:var(--ink);
+    border-radius:999px;
+    padding:11px 16px;
+    font-size:0.92rem;
+    font-weight:700;
+    cursor:pointer;
+    flex:1 1 auto;
+    min-width:96px;
+  }
+  .btn-sec:hover{ border-color:var(--sage-400); background:var(--sage-100); }
+  .btn-sec.warn{ color:var(--danger-line); border-color:var(--danger-line); }
+  .btn-sec.mic{ color:var(--sage-700); border-color:var(--sage-600); font-weight:900; }
+
+  .result-box{
+    margin-top:16px;
+    background:var(--sage-100);
+    border-radius:16px;
+    padding:16px;
+    font-size:1rem;
+    line-height:1.65;
+    min-height:60px;
+    color:var(--ink);
+  }
+
+  .footer{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:0.85rem;
+    margin-top:26px;
+  }
+
+  svg{ max-width:100%; height:auto; }
+
+  @media (max-width:680px){
+    .menu{ grid-template-columns:1fr; }
+    .hero h1{ font-size:1.6rem; }
+    .panel{ padding:20px 16px; }
+    .program-title{ font-size:1.3rem; }
+    .step-title{ font-size:1.3rem; }
+    .target{ font-size:1.4rem; }
+    .material-list{ grid-template-columns:1fr; }
+    .topbar-actions .pill-btn span.label{ display:none; }
+  }
+</style>
+</head>
+
+<body>
+<div class="topbar">
+  <div class="topbar-brand" onclick="goHome()">
+    <span class="dot"></span>
+    <span>말 훈련 프로그램</span>
+  </div>
+  <div class="topbar-actions">
+    <button class="pill-btn" onclick="toggleFontSize()" id="fontToggleBtn">
+      <span class="label">글자 </span>크게
+    </button>
+    <button class="pill-btn" onclick="goHome()">처음으로</button>
+  </div>
+</div>
+
+<div class="app">
+  <section class="hero">
+    <span class="hero-eyebrow">보호자와 함께하는 훈련</span>
+    <h1>오늘의 말 훈련을 시작해볼까요?</h1>
+    <p>아래 네 가지 훈련 중 하나를 골라주세요. 그림과 음성 안내를 따라 천천히 진행하시면 됩니다.</p>
+  </section>
+
+  <section class="menu">
+    <div class="menu-card" id="card-breathing" onclick="selectProgram('breathing')">
+      <div class="menu-icon" id="iconBreathing"></div>
+      <div>
+        <div class="menu-title">1. 호흡 훈련</div>
+        <div class="menu-desc">숨을 들이마시고 천천히 내쉬는 연습</div>
+      </div>
+    </div>
+
+    <div class="menu-card" id="card-voice" onclick="selectProgram('voice')">
+      <div class="menu-icon" id="iconVoice"></div>
+      <div>
+        <div class="menu-title">2. 발성 훈련</div>
+        <div class="menu-desc">목소리 크기와 강도 조절 연습</div>
+      </div>
+    </div>
+
+    <div class="menu-card" id="card-articulation" onclick="selectProgram('articulation')">
+      <div class="menu-icon" id="iconArticulation"></div>
+      <div>
+        <div class="menu-title">3. 조음 훈련</div>
+        <div class="menu-desc">입술, 혀, 턱 움직임과 발음 연습</div>
+      </div>
+    </div>
+
+    <div class="menu-card" id="card-massage" onclick="selectProgram('massage')">
+      <div class="menu-icon" id="iconMassage"></div>
+      <div>
+        <div class="menu-title">4. 구강 마사지</div>
+        <div class="menu-desc">입 주변과 구강 내 감각 자극</div>
+      </div>
+    </div>
+  </section>
+
+  <main class="panel">
+    <div class="program-head">
+      <div class="program-title" id="programTitle">훈련을 선택하세요</div>
+      <div class="step-badge" id="stepBadge">대기 중</div>
+    </div>
+    <div class="dot-progress" id="dotProgress"></div>
+    <div id="contentArea"></div>
+  </main>
+
+  <div class="footer">재활 교육용 프로그램 · 보호자용 실행 화면</div>
+</div>
+
+<script>
+  const USE_PHOTOS = false;
+
+  const photoMap = {
+    posture: "images/breathing-posture.jpg", inhale: "images/breathing-inhale.jpg",
+    exhale: "images/breathing-exhale.jpg", tissue: "images/breathing-tissue.jpg",
+    candle: "images/breathing-candle.jpg", straw: "images/breathing-straw.jpg",
+    voice: "images/voice-aa.jpg", laugh: "images/voice-laugh.jpg",
+    cough: "images/voice-cough.jpg", sentence: "images/voice-sentence.jpg",
+    lips: "images/articulation-lips.jpg", tongue: "images/articulation-tongue.jpg",
+    cheek: "images/articulation-cheek.jpg", sound: "images/articulation-sound.jpg",
+    massage: "images/oral-massage.jpg", gum: "images/oral-gum.jpg",
+    safety: "images/safety-check.jpg"
+  };
+
+  let currentProgram = null;
+  let currentStep = 0;
+  let timerInterval = null;
+  let remainingTime = 0;
+  let totalTime = 0;
+  let recognition = null;
+  let fontBig = false;
+
+  const programs = {
+    breathing: {
+      title: "1. 호흡 훈련",
+      intro: "말할 때 필요한 공기를 충분히 들이마시고 천천히 조절하여 내쉬는 훈련입니다.",
+      materials: ["의자", "휴지 조각", "빨대", "물컵"],
+      safety: "어지러움, 과호흡, 피로가 있으면 즉시 중단합니다.",
+      steps: [
+        { name:"바른 자세 만들기", guide:"의자에 앉아 머리, 목, 몸통을 바르게 세웁니다.\n어깨에 힘을 빼고 앞을 봅니다.", target:"바른 자세로 앉기", time:10, visual:"posture", tip:"흉곽이 움직일 수 있도록 몸통이 너무 구부러지지 않게 도와주세요." },
+        { name:"숨 들이마시기", guide:"코로 천천히 숨을 들이마십니다.\n가슴과 배가 부드럽게 움직이는지 느껴봅니다.", target:"천천히 들이마시기", time:5, visual:"inhale", tip:"숨을 너무 많이 들이마시려고 무리하지 않도록 지켜봐 주세요." },
+        { name:"천천히 내쉬기", guide:"입으로 숨을 천천히 내쉽니다.\n짧게 뱉지 말고 길게 조절합니다.", target:"후—", time:8, visual:"exhale", tip:"말할 때 필요한 호흡 조절과 연결되는 단계예요." },
+        { name:"휴지 조각 불기", guide:"휴지 조각을 가볍게 움직일 정도로 불어봅니다.\n너무 세게 불지 않습니다.", target:"휴지를 살짝 움직이기", time:10, visual:"tissue", tip:"세기보다 일정하게 불어내는 것이 중요해요." },
+        { name:"촛불 불기", guide:"촛불을 끄듯이 입술을 모아 불어봅니다.\n실제 불을 사용할 때는 보호자가 꼭 함께 있어주세요.", target:"후—", time:10, visual:"candle", tip:"실제 촛불이 부담되면 손가락이나 그림을 목표로 사용해도 됩니다." },
+        { name:"빨대로 물에 불기", guide:"빨대로 물에 천천히 공기를 불어넣습니다.\n어지러움이 있으면 바로 멈춥니다.", target:"보글보글", time:10, visual:"straw", tip:"기침이나 사레 위험이 있다면 전문가 확인 후 시행해주세요." }
+      ]
+    },
+    voice: {
+      title: "2. 발성 훈련",
+      intro: "목소리의 크기와 강도를 조절하여 더 분명한 음성을 내는 훈련입니다.",
+      materials: ["의자", "물", "문장 카드", "조용한 공간"],
+      safety: "목 통증, 쉰 목소리, 심한 기침이 있으면 중단합니다.",
+      steps: [
+        { name:"편안한 목소리 준비", guide:"목과 어깨에 힘을 빼고 편안하게 앉습니다.\n소리를 지르지 않습니다.", target:"편안한 목소리", time:10, visual:"voice", tip:"큰 소리가 아니라 분명한 소리를 목표로 해주세요." },
+        { name:"힘 있게 ‘아—’ 소리 내기", guide:"편안한 범위에서 ‘아—’ 소리를 냅니다.\n목이 아프면 바로 중단합니다.", target:"아—", time:6, visual:"voice", tip:"소리를 억지로 길게 끌 필요는 없어요." },
+        { name:"짧게 소리 내기", guide:"짧고 분명하게 소리를 냅니다.\n한 번씩 끊어서 말합니다.", target:"아! 아! 아!", time:8, visual:"voice", tip:"짧은 소리도 발화 시작 훈련이 될 수 있어요." },
+        { name:"크게 웃기", guide:"웃는 소리를 내며 자연스럽게 목소리를 사용합니다.\n목에 힘을 과하게 주지 않습니다.", target:"하하하", time:8, visual:"laugh", tip:"웃음은 발성을 자연스럽게 유도하는 데 도움이 됩니다." },
+        { name:"기침하듯 짧게 힘주기", guide:"기침하듯 짧게 힘을 줘서 소리를 냅니다.\n반복해서 세게 하지 않습니다.", target:"흠!", time:6, visual:"cough", tip:"이 단계는 피로가 빠르게 올 수 있어 짧게만 진행해주세요." },
+        { name:"인사말 하기", guide:"아래 문장을 분명한 목소리로 말합니다.\n천천히, 들리게 말합니다.", target:"고마워요", time:10, visual:"sentence", tip:"실제 생활에서 자주 쓰는 인사말부터 시작해요." },
+        { name:"필요한 것 말하기", guide:"필요할 때 바로 사용할 수 있는 문장을 연습합니다.", target:"화장실 가고 싶어요", time:10, visual:"sentence", tip:"일상에서 가장 자주 쓰게 되는 표현이에요." },
+        { name:"불편함 말하기", guide:"몸이 아프거나 불편할 때 쓰는 말을 연습합니다.", target:"여기가 아파요", time:10, visual:"sentence", tip:"통증이나 불편을 미리 표현할 수 있으면 큰 도움이 돼요." },
+        { name:"대답하기", guide:"짧게 대답하는 연습을 합니다.\n또렷하게 말합니다.", target:"네, 괜찮아요", time:8, visual:"sentence", tip:"‘네/아니요’ 대답부터 조금씩 문장을 늘려가요." }
+      ]
+    },
+    articulation: {
+      title: "3. 조음 훈련",
+      intro: "입술, 혀, 턱, 볼의 움직임을 조절하여 발음을 더 정확하게 만드는 훈련입니다.",
+      materials: ["거울", "의자", "단어 카드", "휴식 시간"],
+      safety: "턱, 혀, 입술에 피로가 생기면 쉬어야 합니다.",
+      steps: [
+        { name:"입술 오므리기", guide:"입술을 앞으로 모았다가 편안하게 풉니다.\n천천히 정확하게 움직입니다.", target:"우—", time:8, visual:"lips", tip:"거울을 보며 좌우가 비슷하게 움직이는지 함께 확인해주세요." },
+        { name:"입술 벌리기", guide:"입술을 옆으로 벌리며 미소 짓듯 움직입니다.\n무리하게 당기지 않습니다.", target:"이—", time:8, visual:"lips", tip:"오므리기와 벌리기를 번갈아 시행할 수 있어요." },
+        { name:"혀 내밀기", guide:"혀를 앞으로 천천히 내밀었다가 다시 넣습니다.\n턱이 과하게 따라 움직이지 않게 합니다.", target:"혀 앞으로", time:8, visual:"tongue", tip:"빠르게 하는 것보다 방향 조절이 중요해요." },
+        { name:"혀 좌우 움직이기", guide:"혀를 왼쪽, 오른쪽으로 천천히 움직입니다.\n정확한 방향 조절을 연습합니다.", target:"왼쪽 · 오른쪽", time:10, visual:"tongue", tip:"혀끝이 원하는 방향으로 가는지 함께 봐주세요." },
+        { name:"볼에 바람 넣기", guide:"볼에 바람을 넣고 잠시 유지합니다.\n공기가 새는지 확인합니다.", target:"볼 부풀리기", time:8, visual:"cheek", tip:"입술 폐쇄와 볼 조절을 함께 살펴봐 주세요." },
+        { name:"입술 소리 연습", guide:"입술을 사용하여 소리를 냅니다.\n천천히 정확하게 반복합니다.", target:"파 · 바 · 마", time:12, visual:"sound", tip:"파, 바, 마는 입술 움직임 확인에 좋아요." },
+        { name:"혀 소리 연습", guide:"혀끝의 움직임을 느끼며 말합니다.\n빠르게 말하기보다 정확하게 말합니다.", target:"타 · 다 · 라", time:12, visual:"sound", tip:"혀끝이 입천장 쪽으로 올라가는지 확인해주세요." },
+        { name:"짧은 단어 반복", guide:"짧은 단어를 천천히 반복합니다.\n발음이 무너지면 속도를 낮춥니다.", target:"바다", time:12, visual:"sentence", tip:"정확도가 먼저이고 속도는 나중이에요." }
+      ]
+    },
+    massage: {
+      title: "4. 구강 마사지",
+      intro: "입 주변과 구강 내 감각 및 움직임을 자극하기 위한 훈련입니다.",
+      materials: ["장갑", "설압자", "거즈", "손 위생"],
+      safety: "구역반사, 통증, 상처, 흡인 위험이 있으므로 전문가 지도하에 시행하는 것이 안전합니다.",
+      steps: [
+        { name:"시작 전 안전 확인", guide:"구강 내 상처, 출혈, 심한 통증, 심한 구역질이 있으면 시행하지 않습니다.", target:"안전 확인", time:10, visual:"safety", tip:"식사 직후에는 피하는 것이 좋아요." },
+        { name:"입 주변 자극", guide:"입 주변을 손가락으로 부드럽게 자극합니다.\n강하게 누르지 않습니다.", target:"입 주변", time:10, visual:"massage", tip:"구강 내부로 바로 들어가기 전 준비 단계예요." },
+        { name:"볼 안쪽 자극", guide:"볼 안쪽을 부드럽게 자극합니다.\n너무 깊이 넣지 않습니다.", target:"볼 안쪽", time:10, visual:"massage", tip:"구역질이 나오면 즉시 중단해주세요." },
+        { name:"윗잇몸 자극", guide:"비교적 민감도가 낮은 윗잇몸부터 부드럽게 자극합니다.", target:"윗잇몸", time:10, visual:"gum", tip:"강한 압박보다 부드러운 접촉이 우선이에요." },
+        { name:"아랫잇몸 자극", guide:"아랫잇몸을 부드럽게 자극합니다.\n통증이 있으면 중단합니다.", target:"아랫잇몸", time:10, visual:"gum", tip:"민감한 환자분은 시간이 더 짧아야 해요." },
+        { name:"혀 주변 자극", guide:"혀 주변은 특히 조심해서 자극합니다.\n깊이 넣거나 강하게 누르지 않습니다.", target:"혀 주변", time:8, visual:"tongue", tip:"흡인 위험이 있는 환자분에게는 특히 신중하게 진행해주세요." }
+      ]
+    }
+  };
+
+  const randomTargets = {
+    voice: ["안녕하세요", "고마워요", "물 주세요", "화장실 가고 싶어요", "여기가 아파요", "네, 괜찮아요", "배고파요", "잘 지냈어요"],
+    articulation: ["파 바 마", "타 다 라", "바다", "마마", "나라", "다리", "파도", "라마"]
+  };
+
+  function getVisual(type){
+    if (USE_PHOTOS && photoMap[type]) {
+      return '<img src="' + photoMap[type] + '" alt="훈련 예시 사진">';
+    }
+    return getIllustration(type);
+  }
+
+  function getIllustration(type) {
+    const baseStart = '<svg viewBox="0 0 420 280" role="img" aria-label="훈련 예시 그림"><rect width="420" height="280" rx="24" fill="#F3F1E8"/>';
+    const baseEnd = '</svg>';
+
+    const person =
+      '<circle cx="150" cy="74" r="34" fill="#F4C98B" stroke="#2F5548" stroke-width="5"/>' +
+      '<path d="M115 168 Q150 112 185 168 L198 240 L102 240 Z" fill="#7FA895" stroke="#2F5548" stroke-width="5"/>' +
+      '<path d="M118 155 L75 195" stroke="#2F5548" stroke-width="9" stroke-linecap="round"/>' +
+      '<path d="M182 155 L230 195" stroke="#2F5548" stroke-width="9" stroke-linecap="round"/>';
+
+    if (type === "posture") {
+      return baseStart + person +
+        '<line x1="150" y1="25" x2="150" y2="240" stroke="#D9922F" stroke-width="6" stroke-dasharray="10 10"/>' +
+        '<text x="245" y="95" font-size="25" font-weight="900" fill="#2F5548">바른 자세</text>' +
+        '<text x="245" y="132" font-size="18" fill="#5C685F">머리·목·몸통 정렬</text>' + baseEnd;
+    }
+    if (type === "inhale") {
+      return baseStart + person +
+        '<path d="M265 115 C315 80, 360 80, 385 115" fill="none" stroke="#3D6B5C" stroke-width="9" stroke-linecap="round"/>' +
+        '<path d="M265 150 C315 115, 360 115, 385 150" fill="none" stroke="#3D6B5C" stroke-width="9" stroke-linecap="round"/>' +
+        '<polygon points="260,115 283,98 283,132" fill="#3D6B5C"/>' +
+        '<polygon points="260,150 283,133 283,167" fill="#3D6B5C"/>' +
+        '<text x="245" y="215" font-size="26" font-weight="900" fill="#2F5548">들이마시기</text>' + baseEnd;
+    }
+    if (type === "exhale") {
+      return baseStart + person +
+        '<path d="M210 100 C260 80, 320 80, 380 100" fill="none" stroke="#D9922F" stroke-width="9" stroke-linecap="round"/>' +
+        '<path d="M210 135 C270 115, 330 115, 390 135" fill="none" stroke="#D9922F" stroke-width="9" stroke-linecap="round"/>' +
+        '<polygon points="390,100 365,85 365,115" fill="#D9922F"/>' +
+        '<polygon points="400,135 375,120 375,150" fill="#D9922F"/>' +
+        '<text x="270" y="215" font-size="34" font-weight="900" fill="#2F5548">후—</text>' + baseEnd;
+    }
+    if (type === "tissue") {
+      return baseStart + person +
+        '<path d="M210 120 C250 105, 285 105, 320 120" fill="none" stroke="#D9922F" stroke-width="8" stroke-linecap="round"/>' +
+        '<rect x="325" y="98" width="56" height="46" rx="8" fill="#ffffff" stroke="#2F5548" stroke-width="4"/>' +
+        '<path d="M335 110 L370 132" stroke="#C9DDD1" stroke-width="3"/>' +
+        '<path d="M370 110 L335 132" stroke="#C9DDD1" stroke-width="3"/>' +
+        '<text x="235" y="215" font-size="23" font-weight="900" fill="#2F5548">휴지 조각 불기</text>' + baseEnd;
+    }
+    if (type === "candle") {
+      return baseStart + person +
+        '<path d="M210 125 C250 115, 285 115, 320 125" fill="none" stroke="#D9922F" stroke-width="8" stroke-linecap="round"/>' +
+        '<rect x="335" y="125" width="28" height="85" rx="6" fill="#ffffff" stroke="#2F5548" stroke-width="4"/>' +
+        '<path d="M349 86 C328 112, 349 123, 349 123 C349 123, 371 110, 349 86Z" fill="#D9922F" stroke="#2F5548" stroke-width="3"/>' +
+        '<line x1="349" y1="123" x2="349" y2="135" stroke="#2F5548" stroke-width="3"/>' +
+        '<text x="250" y="238" font-size="23" font-weight="900" fill="#2F5548">촛불 불기</text>' + baseEnd;
+    }
+    if (type === "straw") {
+      return baseStart + person +
+        '<line x1="213" y1="115" x2="310" y2="165" stroke="#2F5548" stroke-width="7" stroke-linecap="round"/>' +
+        '<rect x="295" y="155" width="82" height="75" rx="12" fill="#C9DDD1" stroke="#2F5548" stroke-width="5"/>' +
+        '<circle cx="320" cy="190" r="8" fill="#ffffff"/><circle cx="348" cy="205" r="6" fill="#ffffff"/><circle cx="363" cy="180" r="7" fill="#ffffff"/>' +
+        '<text x="245" y="250" font-size="23" font-weight="900" fill="#2F5548">빨대로 불기</text>' + baseEnd;
+    }
+    if (type === "voice") {
+      return baseStart + person +
+        '<path d="M215 105 Q265 80 315 105" fill="none" stroke="#3D6B5C" stroke-width="7" stroke-linecap="round"/>' +
+        '<path d="M220 140 Q290 100 365 140" fill="none" stroke="#3D6B5C" stroke-width="7" stroke-linecap="round"/>' +
+        '<text x="260" y="195" font-size="42" font-weight="900" fill="#2F5548">아—</text>' + baseEnd;
+    }
+    if (type === "laugh") {
+      return baseStart + person +
+        '<path d="M130 78 Q150 98 170 78" fill="none" stroke="#2F5548" stroke-width="5" stroke-linecap="round"/>' +
+        '<path d="M240 105 Q300 70 365 105" fill="none" stroke="#D9922F" stroke-width="7" stroke-linecap="round"/>' +
+        '<text x="248" y="172" font-size="38" font-weight="900" fill="#B9741C">하하하</text>' + baseEnd;
+    }
+    if (type === "cough") {
+      return baseStart + person +
+        '<path d="M215 125 L282 105 L282 145 Z" fill="#E7A088" stroke="#2F5548" stroke-width="4"/>' +
+        '<text x="300" y="138" font-size="38" font-weight="900" fill="#C1543C">흠!</text>' +
+        '<text x="245" y="215" font-size="21" font-weight="900" fill="#5C685F">짧게 힘주기</text>' + baseEnd;
+    }
+    if (type === "sentence") {
+      return baseStart + person +
+        '<rect x="225" y="70" width="160" height="100" rx="20" fill="#ffffff" stroke="#2F5548" stroke-width="5"/>' +
+        '<path d="M255 170 L235 200 L292 170" fill="#ffffff" stroke="#2F5548" stroke-width="5"/>' +
+        '<text x="247" y="112" font-size="22" font-weight="900" fill="#2F5548">안녕하세요</text>' +
+        '<text x="265" y="145" font-size="18" fill="#5C685F">또렷하게</text>' + baseEnd;
+    }
+    if (type === "lips") {
+      return baseStart +
+        '<circle cx="145" cy="125" r="62" fill="#F4C98B" stroke="#2F5548" stroke-width="5"/>' +
+        '<ellipse cx="145" cy="145" rx="34" ry="15" fill="#E7A088" stroke="#2F5548" stroke-width="4"/>' +
+        '<circle cx="130" cy="108" r="6" fill="#2F5548"/><circle cx="160" cy="108" r="6" fill="#2F5548"/>' +
+        '<text x="230" y="105" font-size="38" font-weight="900" fill="#2F5548">우—</text>' +
+        '<text x="230" y="155" font-size="38" font-weight="900" fill="#2F5548">이—</text>' +
+        '<text x="228" y="210" font-size="20" fill="#5C685F">입술 움직임</text>' + baseEnd;
+    }
+    if (type === "tongue") {
+      return baseStart +
+        '<circle cx="145" cy="125" r="62" fill="#F4C98B" stroke="#2F5548" stroke-width="5"/>' +
+        '<path d="M115 145 Q145 172 175 145" fill="#E7A088" stroke="#2F5548" stroke-width="4"/>' +
+        '<path d="M135 148 Q145 190 162 148" fill="#DE8A72" stroke="#2F5548" stroke-width="3"/>' +
+        '<path d="M250 120 L335 120" stroke="#3D6B5C" stroke-width="8" stroke-linecap="round"/>' +
+        '<polygon points="345,120 322,105 322,135" fill="#3D6B5C"/>' +
+        '<path d="M335 165 L250 165" stroke="#3D6B5C" stroke-width="8" stroke-linecap="round"/>' +
+        '<polygon points="240,165 263,150 263,180" fill="#3D6B5C"/>' +
+        '<text x="230" y="220" font-size="22" font-weight="900" fill="#2F5548">혀 움직임</text>' + baseEnd;
+    }
+    if (type === "cheek") {
+      return baseStart +
+        '<circle cx="150" cy="128" r="70" fill="#F4C98B" stroke="#2F5548" stroke-width="5"/>' +
+        '<circle cx="120" cy="132" r="30" fill="#F1CDBF" stroke="#2F5548" stroke-width="4"/>' +
+        '<circle cx="180" cy="132" r="30" fill="#F1CDBF" stroke="#2F5548" stroke-width="4"/>' +
+        '<circle cx="132" cy="100" r="6" fill="#2F5548"/><circle cx="168" cy="100" r="6" fill="#2F5548"/>' +
+        '<text x="250" y="128" font-size="30" font-weight="900" fill="#2F5548">볼 부풀리기</text>' + baseEnd;
+    }
+    if (type === "sound") {
+      return baseStart + person +
+        '<rect x="225" y="65" width="160" height="125" rx="22" fill="#ffffff" stroke="#2F5548" stroke-width="5"/>' +
+        '<text x="252" y="112" font-size="30" font-weight="900" fill="#2F5548">파 바 마</text>' +
+        '<text x="252" y="155" font-size="30" font-weight="900" fill="#2F5548">타 다 라</text>' + baseEnd;
+    }
+    if (type === "massage") {
+      return baseStart +
+        '<circle cx="145" cy="130" r="66" fill="#F4C98B" stroke="#2F5548" stroke-width="5"/>' +
+        '<path d="M115 145 Q145 170 175 145" fill="#F1CDBF" stroke="#2F5548" stroke-width="4"/>' +
+        '<path d="M245 95 C290 110 305 150 260 180" fill="none" stroke="#2F5548" stroke-width="14" stroke-linecap="round"/>' +
+        '<circle cx="245" cy="95" r="16" fill="#F4C98B" stroke="#2F5548" stroke-width="4"/>' +
+        '<text x="230" y="230" font-size="22" font-weight="900" fill="#2F5548">부드럽게 자극</text>' + baseEnd;
+    }
+    if (type === "gum") {
+      return baseStart +
+        '<circle cx="145" cy="130" r="66" fill="#F4C98B" stroke="#2F5548" stroke-width="5"/>' +
+        '<path d="M105 145 Q145 185 185 145" fill="#F1CDBF" stroke="#2F5548" stroke-width="4"/>' +
+        '<path d="M115 135 Q145 155 175 135" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>' +
+        '<line x1="230" y1="95" x2="325" y2="155" stroke="#7FA895" stroke-width="12" stroke-linecap="round"/>' +
+        '<circle cx="220" cy="88" r="16" fill="#F4C98B" stroke="#2F5548" stroke-width="4"/>' +
+        '<text x="230" y="225" font-size="22" font-weight="900" fill="#2F5548">잇몸 자극</text>' + baseEnd;
+    }
+    if (type === "safety") {
+      return baseStart +
+        '<rect x="95" y="55" width="230" height="170" rx="24" fill="#ffffff" stroke="#2F5548" stroke-width="5"/>' +
+        '<path d="M135 120 L185 170 L285 85" fill="none" stroke="#3D6B5C" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<text x="130" y="245" font-size="24" font-weight="900" fill="#3D6B5C">안전 확인</text>' + baseEnd;
+    }
+    return baseStart + person + '<text x="245" y="145" font-size="24" font-weight="900" fill="#2F5548">훈련 예시</text>' + baseEnd;
+  }
+
+  // simple line icons for the menu cards
+  function getMenuIcon(type){
+    const stroke = 'stroke="#3D6B5C" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"';
+    if (type === "breathing") {
+      return '<svg viewBox="0 0 40 40"><path d="M6 22c4-10 10-10 14 0s10 10 14 0" ' + stroke + '/></svg>';
+    }
+    if (type === "voice") {
+      return '<svg viewBox="0 0 40 40"><path d="M20 8v24M13 14v12M27 14v12M6 18v4M34 18v4" ' + stroke + '/></svg>';
+    }
+    if (type === "articulation") {
+      return '<svg viewBox="0 0 40 40"><ellipse cx="20" cy="22" rx="12" ry="7" ' + stroke + '/><path d="M12 22c3 4 13 4 16 0" ' + stroke + '/></svg>';
+    }
+    return '<svg viewBox="0 0 40 40"><circle cx="20" cy="18" r="12" ' + stroke + '/><path d="M14 30c2 3 10 3 12 0" ' + stroke + '/></svg>';
+  }
+
+  function initPage(){
+    document.getElementById("iconBreathing").innerHTML = getMenuIcon("breathing");
+    document.getElementById("iconVoice").innerHTML = getMenuIcon("voice");
+    document.getElementById("iconArticulation").innerHTML = getMenuIcon("articulation");
+    document.getElementById("iconMassage").innerHTML = getMenuIcon("massage");
+    renderHome();
+  }
+
+  function toggleFontSize(){
+    fontBig = !fontBig;
+    document.documentElement.style.setProperty('--scale', fontBig ? '1.18' : '1');
+    document.getElementById("fontToggleBtn").innerHTML = fontBig ? '<span class="label">글자 </span>작게' : '<span class="label">글자 </span>크게';
+  }
+
+  function goHome(){
+    stopTimer();
+    stopReading();
+    currentProgram = null;
+    const cards = document.querySelectorAll(".menu-card");
+    for (let i=0;i<cards.length;i++){ cards[i].classList.remove("active"); }
+    renderHome();
+  }
+
+  function renderDots(total, activeIndex){
+    let html = "";
+    for (let i=0;i<total;i++){
+      let cls = "dot";
+      if (i < activeIndex) cls += " done";
+      if (i === activeIndex) cls += " now";
+      html += '<div class="' + cls + '"></div>';
+    }
+    return html;
+  }
+
+  function renderHome(){
+    document.getElementById("programTitle").innerText = "훈련을 선택하세요";
+    document.getElementById("stepBadge").innerText = "대기 중";
+    document.getElementById("dotProgress").innerHTML = "";
+
+    document.getElementById("contentArea").innerHTML =
+      '<div class="stack">' +
+        '<div class="info-card">' +
+          '<h2>사용 방법</h2>' +
+          '<p>위 네 개의 카드 중 하나를 눌러 시작하세요. 각 훈련은 여러 단계로 나뉘어 있고, 그림과 음성 안내가 함께 나옵니다. 한 단계씩 천천히 진행하시면 됩니다.</p>' +
+        '</div>' +
+        '<div class="danger">이 프로그램은 훈련 보조 도구입니다. 삼킴 문제, 흡인 위험, 심한 인지저하가 있는 경우 반드시 전문가 지도하에 시행해주세요.</div>' +
+      '</div>';
+  }
+
+  function selectProgram(programKey){
+    stopTimer();
+    stopReading();
+    currentProgram = programKey;
+    currentStep = 0;
+
+    const cards = document.querySelectorAll(".menu-card");
+    for (let i=0;i<cards.length;i++){ cards[i].classList.remove("active"); }
+    document.getElementById("card-" + programKey).classList.add("active");
+
+    renderProgramStart();
+    document.querySelector(".panel").scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  function renderProgramStart(){
+    const program = programs[currentProgram];
+
+    document.getElementById("programTitle").innerText = program.title;
+    document.getElementById("stepBadge").innerText = "시작 전";
+    document.getElementById("dotProgress").innerHTML = "";
+
+    let materialHTML = "";
+    for (let i=0;i<program.materials.length;i++){
+      materialHTML += '<div class="material">' + program.materials[i] + '</div>';
+    }
+
+    let massageCheckHTML = "";
+    if (currentProgram === "massage"){
+      massageCheckHTML =
+        '<h2 style="margin-top:18px;">시작 전 확인</h2>' +
+        '<div class="check-list">' +
+          '<label><input type="checkbox" id="safe1"> 식사 직후가 아닙니다.</label>' +
+          '<label><input type="checkbox" id="safe2"> 구강 내 상처나 출혈이 없습니다.</label>' +
+          '<label><input type="checkbox" id="safe3"> 심한 구역질이나 통증이 없습니다.</label>' +
+        '</div>';
+    }
+
+    document.getElementById("contentArea").innerHTML =
+      '<div class="stack">' +
+        '<div class="visual-card">' +
+          '<div class="visual-title">' + program.title + ' 예시 화면</div>' +
+          '<div class="visual-frame">' + getVisual(program.steps[0].visual) + '</div>' +
+        '</div>' +
+        '<div class="content-card">' +
+          '<h2>' + program.title + '</h2>' +
+          '<p>' + program.intro + '</p>' +
+          '<div class="danger"><strong>주의:</strong> ' + program.safety + '</div>' +
+          '<h2>준비물</h2>' +
+          '<div class="material-list">' + materialHTML + '</div>' +
+          massageCheckHTML +
+        '</div>' +
+        '<button class="btn-primary" onclick="startProgram()">훈련 시작하기</button>' +
+        '<div class="secondary-row"><button class="btn-sec" onclick="readProgramIntro()">안내 듣기</button></div>' +
+      '</div>';
+  }
+
+  function readProgramIntro(){
+    if (!currentProgram) return;
+    const program = programs[currentProgram];
+    speakText(program.title + ". " + program.intro + ". " + program.safety);
+  }
+
+  function startProgram(){
+    if (currentProgram === "massage"){
+      const safe1 = document.getElementById("safe1").checked;
+      const safe2 = document.getElementById("safe2").checked;
+      const safe3 = document.getElementById("safe3").checked;
+      if (!safe1 || !safe2 || !safe3){
+        alert("구강 마사지는 안전 확인을 모두 체크한 뒤 시작하세요.");
+        return;
+      }
+    }
+    currentStep = 0;
+    renderStep();
+  }
+
+  function renderStep(){
+    stopTimer();
+    stopReading();
+
+    const program = programs[currentProgram];
+    const step = program.steps[currentStep];
+
+    document.getElementById("programTitle").innerText = program.title;
+    document.getElementById("stepBadge").innerText = (currentStep+1) + " / " + program.steps.length + " 단계";
+    document.getElementById("dotProgress").innerHTML = renderDots(program.steps.length, currentStep);
+
+    let speechButtons = "";
+    if (currentProgram === "voice" || currentProgram === "articulation"){
+      speechButtons =
+        '<button class="btn-sec mic" onclick="startSpeechRecognition()">🎙 말하기 확인</button>' +
+        '<button class="btn-sec" onclick="changeRandomTarget()">다른 문장</button>';
+    }
+
+    const isMassage = currentProgram === "massage";
+
+    let massageWarning = "";
+    if (isMassage){
+      massageWarning = '<div class="caution">구강 내부 자극은 구역반사, 통증, 상처, 흡인 위험이 있을 수 있습니다. 깊게 넣거나 강하게 누르지 마세요.</div>';
+    }
+
+    let resultText = "훈련 중 불편감이 있으면 즉시 중단하세요.";
+    if (currentProgram === "voice" || currentProgram === "articulation"){
+      resultText = "‘말하기 확인’을 누르면 인식된 말이 여기에 표시됩니다.";
+    }
+
+    const isLast = currentStep === program.steps.length - 1;
+    const nextLabel = isLast ? "훈련 마치기" : "다음 단계";
+
+    // 구강 마사지는 정해진 시간보다 보호자의 판단(환자 반응)이 중요하므로 타이머 없이 안내만 제공합니다.
+    const timerSectionHTML = isMassage
+      ? '<div class="status" style="margin-top:20px;" id="statusText">환자분의 반응을 살피며 천천히 진행해주세요. 준비되면 아래 ‘다음 단계’를 눌러주세요.</div>'
+      : (
+          '<div class="timer-block">' +
+            '<div class="ring-wrap"><div class="ring-bg" id="ringBg"><div class="ring-inner" id="timerText">' + step.time + '</div></div></div>' +
+            '<div class="status" id="statusText">아래 ‘단계 시작’을 누르면 음성 안내와 함께 타이머가 진행됩니다.</div>' +
+          '</div>'
+        );
+
+    const primaryButtonHTML = isMassage
+      ? '<button class="btn-primary sage" onclick="speakStep()">🔊 안내 듣기</button>'
+      : '<button class="btn-primary sage" onclick="startTimer()">이 단계 시작</button>';
+
+    const timerControlsHTML = isMassage
+      ? '<div class="secondary-row"><button class="btn-sec" onclick="speakStep()">🔊 다시 듣기</button></div>'
+      : (
+          '<div class="secondary-row">' +
+            '<button class="btn-sec" onclick="pauseTimer()">일시정지</button>' +
+            '<button class="btn-sec" onclick="resetTimer()">다시 하기</button>' +
+            '<button class="btn-sec" onclick="speakStep()">🔊 다시 듣기</button>' +
+            speechButtons +
+          '</div>'
+        );
+
+    document.getElementById("contentArea").innerHTML =
+      massageWarning +
+      '<div class="stack">' +
+        '<div class="visual-card">' +
+          '<div class="visual-title">예시 그림</div>' +
+          '<div class="visual-frame">' + getVisual(step.visual) + '</div>' +
+        '</div>' +
+        '<div class="content-card">' +
+          '<div class="step-title">' + step.name + '</div>' +
+          '<div class="guide">' + step.guide + '</div>' +
+          '<div class="target-label">함께 따라하기</div>' +
+          '<div class="target" id="targetText">' + step.target + '</div>' +
+          '<div class="caregiver-tip"><strong>보호자 안내:</strong> ' + step.tip + '</div>' +
+          timerSectionHTML +
+        '</div>' +
+
+        primaryButtonHTML +
+        timerControlsHTML +
+
+        '<div class="secondary-row">' +
+          '<button class="btn-sec" onclick="prevStep()"' + (currentStep===0 ? ' disabled' : '') + '>← 이전 단계</button>' +
+          '<button class="btn-sec" style="flex:2;font-weight:900;color:#B9741C;border-color:#D9922F;" onclick="nextStep()">' + nextLabel + ' →</button>' +
+        '</div>' +
+
+        '<div class="result-box" id="resultBox">' + resultText + '</div>' +
+      '</div>';
+  }
+
+  function startTimer(){
+    stopTimer();
+    const step = programs[currentProgram].steps[currentStep];
+    remainingTime = step.time;
+    totalTime = step.time;
+
+    document.getElementById("timerText").innerText = remainingTime;
+    document.getElementById("ringBg").style.setProperty('--pct', 100);
+    document.getElementById("statusText").innerText = "훈련 중입니다. 화면의 그림과 문장을 보고 함께 따라 해주세요.";
+
+    speakText(step.name + ". " + step.guide + ". 따라하기. " + step.target);
+
+    timerInterval = setInterval(function(){
+      remainingTime = remainingTime - 1;
+      const pct = Math.max(0, Math.round((remainingTime/totalTime)*100));
+      document.getElementById("timerText").innerText = Math.max(0, remainingTime);
+      document.getElementById("ringBg").style.setProperty('--pct', pct);
+
+      if (remainingTime <= 0){
+        stopTimer();
+        document.getElementById("statusText").innerText = "완료되었습니다. ‘다음 단계’를 눌러주세요.";
+        speakText("완료되었습니다. 다음 단계로 이동하세요.");
+      }
+    }, 1000);
+  }
+
+  function pauseTimer(){
+    if (timerInterval){
+      clearInterval(timerInterval);
+      timerInterval = null;
+      document.getElementById("statusText").innerText = "일시정지되었습니다.";
+    }
+  }
+
+  function resetTimer(){
+    stopTimer();
+    const step = programs[currentProgram].steps[currentStep];
+    remainingTime = step.time;
+    totalTime = step.time;
+    document.getElementById("timerText").innerText = remainingTime;
+    document.getElementById("ringBg").style.setProperty('--pct', 100);
+    document.getElementById("statusText").innerText = "다시 준비되었습니다.";
+  }
+
+  function stopTimer(){
+    if (timerInterval){
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+  }
+
+  function nextStep(){
+    const program = programs[currentProgram];
+    if (currentStep < program.steps.length - 1){
+      currentStep = currentStep + 1;
+      renderStep();
+    } else {
+      finishProgram();
+    }
+  }
+
+  function prevStep(){
+    if (currentStep > 0){
+      currentStep = currentStep - 1;
+      renderStep();
+    }
+  }
+
+  function finishProgram(){
+    stopTimer();
+    stopReading();
+    const program = programs[currentProgram];
+
+    document.getElementById("stepBadge").innerText = "완료";
+    document.getElementById("dotProgress").innerHTML = renderDots(program.steps.length, program.steps.length);
+
+    document.getElementById("contentArea").innerHTML =
+      '<div class="stack">' +
+        '<div class="visual-card">' +
+          '<div class="visual-title">훈련 완료</div>' +
+          '<div class="visual-frame">' + getVisual("safety") + '</div>' +
+        '</div>' +
+        '<div class="content-card">' +
+          '<h2>' + program.title + ' 완료</h2>' +
+          '<p>훈련이 끝났습니다. 피로, 어지러움, 목 통증, 심한 기침, 구역질이 있었는지 확인해주세요.</p>' +
+          '<div class="danger">불편감이 있었다면 다음 훈련은 쉬거나 치료사에게 알려주세요.</div>' +
+        '</div>' +
+        '<button class="btn-primary" onclick="startProgram()">다시 시작하기</button>' +
+        '<div class="secondary-row"><button class="btn-sec" onclick="goHome()">처음 화면으로</button></div>' +
+      '</div>';
+
+    speakText(program.title + "이 완료되었습니다.");
+  }
+
+  function speakStep(){
+    const step = programs[currentProgram].steps[currentStep];
+    speakText(step.name + ". " + step.guide + ". 따라하기. " + step.target);
+  }
+
+  function speakText(text){
+    window.speechSynthesis.cancel();
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.lang = "ko-KR";
+    speech.rate = 0.85;
+    speech.pitch = 1;
+    window.speechSynthesis.speak(speech);
+  }
+
+  function stopReading(){
+    window.speechSynthesis.cancel();
+  }
+
+  function changeRandomTarget(){
+    if (!randomTargets[currentProgram]) return;
+    const list = randomTargets[currentProgram];
+    const random = list[Math.floor(Math.random()*list.length)];
+    document.getElementById("targetText").innerText = random;
+    speakText(random);
+  }
+
+  function startSpeechRecognition(){
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition){
+      alert("이 브라우저는 음성 인식을 지원하지 않습니다. 크롬 브라우저에서 사용해보세요.");
+      return;
+    }
+
+    recognition = new SpeechRecognition();
+    recognition.lang = "ko-KR";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    document.getElementById("resultBox").innerText = "듣는 중입니다. 화면의 문장을 말해보세요.";
+    recognition.start();
+
+    recognition.onresult = function(event){
+      const spokenText = event.results[0][0].transcript;
+      const targetText = document.getElementById("targetText").innerText;
+      document.getElementById("resultBox").innerHTML =
+        '<strong>목표:</strong> ' + targetText + '<br>' +
+        '<strong>인식된 말:</strong> ' + spokenText + '<br><br>' +
+        '목표와 다르면 천천히 다시 말해보세요.';
+    };
+
+    recognition.onerror = function(){
+      document.getElementById("resultBox").innerText = "음성 인식이 잘 되지 않았습니다. 다시 시도하세요.";
+    };
+  }
+
+  window.onload = initPage;
+</script>
+</body>
+</html>
